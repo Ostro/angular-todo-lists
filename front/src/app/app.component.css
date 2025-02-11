@@ -1,0 +1,18 @@
+.main {
+  display: flex;
+  height: 100vh;
+}
+
+.divider {
+  width: 1px;
+  background-color: grey;
+}
+
+.container {
+  width: 35%;
+  margin: auto;
+}
+
+app-todo-lists {
+  padding: 50px;
+}

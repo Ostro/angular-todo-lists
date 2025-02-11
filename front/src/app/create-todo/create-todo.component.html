@@ -1,0 +1,18 @@
+<div
+  [style]="{ display: 'flex', gap: '.5rem', padding: '.5rem' }"
+  class="todo-task"
+>
+  <input
+    type="text"
+    [style]="{ width: '100%', height: '2rem' }"
+    placeholder="your todo ..."
+    [(ngModel)]="newTodo"
+  />
+  <button
+    (click)="onSave()"
+    [disabled]="!newTodo()"
+    [style]="{ whiteSpace: 'pre' }"
+  >
+    Create a todo
+  </button>
+</div>

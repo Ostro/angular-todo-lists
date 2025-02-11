@@ -1,0 +1,8 @@
+front/.angular/
+front/.vscode/
+server/dist
+
+server/prisma/generated
+
+**/package-lock.json
+**/package.json

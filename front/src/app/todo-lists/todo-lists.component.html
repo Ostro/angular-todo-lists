@@ -1,0 +1,23 @@
+<ul>
+  @for (list of todoLists(); track list.id) {
+    <div
+      [style]="{
+        display: 'flex',
+        gap: '1rem',
+        justifyContent: 'space-between',
+      }"
+    >
+      <li
+        [class]="{ underline: selectedListId() === list.id }"
+        (click)="chooseList(list.id)"
+      >
+        {{ list.title }}
+      </li>
+      <span [style]="{ cursor: 'pointer' }" (click)="deleteList(list.id)"
+        >X</span
+      >
+    </div>
+  }
+</ul>
+<input type="text" [(ngModel)]="newListTitle" />
+<button (click)="createList()" [disabled]="!newListTitle()">+</button>
