@@ -1,0 +1,12 @@
+<div class="layout">
+  <TodoLists />
+  <div class="divider"></div>
+  @if (!!todoListService.selectedListId()) {
+    <div class="container">
+      @for (todo of todoListService.getTodos(); track todo.id) {
+        <TodoTask [todo]="todo"></TodoTask>
+      }
+      <CreateTodo />
+    </div>
+  }
+</div>

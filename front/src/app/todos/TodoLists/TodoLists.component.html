@@ -1,5 +1,5 @@
 <ul>
-  @for (list of todoLists(); track list.id) {
+  @for (list of todoListService.getTodoLists(); track list.id) {
     <div
       [style]="{
         display: 'flex',
@@ -8,7 +8,7 @@
       }"
     >
       <li
-        [class]="{ underline: selectedListId() === list.id }"
+        [class]="{ underline: todoListService.selectedListId() === list.id }"
         (click)="chooseList(list.id)"
       >
         {{ list.title }}
@@ -19,5 +19,7 @@
     </div>
   }
 </ul>
-<input type="text" [(ngModel)]="newListTitle" />
-<button (click)="createList()" [disabled]="!newListTitle()">+</button>
+<div class="row">
+  <input type="text" [(ngModel)]="newListTitle" />
+  <button (click)="createList()" [disabled]="!newListTitle()">+</button>
+</div>
