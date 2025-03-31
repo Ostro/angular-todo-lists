@@ -1,10 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TodoListService } from '../../services/todoLists.service';
+import { CommonModule } from '@angular/common';
+import { TodoList } from '../../../types/prismaTypes';
 
 @Component({
   selector: 'TodoLists',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './TodoLists.component.html',
   styleUrl: './TodoLists.component.css',
 })

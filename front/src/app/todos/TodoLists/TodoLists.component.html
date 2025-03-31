@@ -1,23 +1,20 @@
 <ul>
-  @for (list of todoListService.getTodoLists(); track list.id) {
-    <div
-      [style]="{
+  <div
+    *ngFor="let list of todoListService.getTodoLists()"
+    [style]="{
         display: 'flex',
         gap: '1rem',
         justifyContent: 'space-between',
       }"
+  >
+    <li
+      [class]="{ underline: todoListService.selectedListId() === list.id }"
+      (click)="chooseList(list.id)"
     >
-      <li
-        [class]="{ underline: todoListService.selectedListId() === list.id }"
-        (click)="chooseList(list.id)"
-      >
-        {{ list.title }}
-      </li>
-      <span [style]="{ cursor: 'pointer' }" (click)="deleteList(list.id)"
-        >X</span
-      >
-    </div>
-  }
+      {{ list.title }}
+    </li>
+    <span [style]="{ cursor: 'pointer' }" (click)="deleteList(list.id)">X</span>
+  </div>
 </ul>
 <div class="row">
   <input type="text" [(ngModel)]="newListTitle" />

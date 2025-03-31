@@ -5,11 +5,6 @@ const prisma = new PrismaClient();
 
 async function seedDb() {
   console.log('Seeding database...');
-  console.log({
-    users: await prisma.user.count(),
-    todos: await prisma.todo.count(),
-    todoLists: await prisma.todoList.count(),
-  });
   await prisma.user.create({
     data: {
       email: 'foo@bar.com',

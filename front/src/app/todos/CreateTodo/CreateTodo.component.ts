@@ -17,7 +17,6 @@ export class CreateTodoComponent {
 
   async onSave() {
     const listId = this.todoListService.selectedListId();
-    console.log('onSave', listId);
     if (!listId) {
       return;
     }

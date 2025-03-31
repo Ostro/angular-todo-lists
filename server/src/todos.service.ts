@@ -36,7 +36,6 @@ export class TodosService {
   }
 
   patchTodo(id: number, todoData: Prisma.TodoUpdateInput) {
-    console.log(id, todoData);
     return this.prisma.todo.update({
       where: { id },
       data: todoData,
