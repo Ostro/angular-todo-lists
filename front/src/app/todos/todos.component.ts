@@ -3,12 +3,19 @@ import { TodoTaskComponent } from './TodoTask/TodoTask.component';
 import { CreateTodoComponent } from './CreateTodo/CreateTodo.component';
 import { TodoListsComponent } from './TodoLists/TodoLists.component';
 import { TodoListService } from '../services/todoLists.service';
+import { CommonModule } from '@angular/common';
+import { DividerModule } from 'primeng/divider';
 
 @Component({
   selector: 'app-todos',
-  imports: [TodoTaskComponent, CreateTodoComponent, TodoListsComponent],
+  imports: [
+    CommonModule,
+    TodoTaskComponent,
+    CreateTodoComponent,
+    TodoListsComponent,
+    DividerModule,
+  ],
   templateUrl: './todos.component.html',
-  styleUrl: './todos.component.css',
 })
 export class TodosComponent {
   todoListService = inject(TodoListService);

@@ -2,13 +2,13 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TodoListService } from '../../services/todoLists.service';
 import { CommonModule } from '@angular/common';
-import { TodoList } from '../../../types/prismaTypes';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'TodoLists',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, ButtonModule, InputTextModule],
   templateUrl: './TodoLists.component.html',
-  styleUrl: './TodoLists.component.css',
 })
 export class TodoListsComponent {
   todoListService = inject(TodoListService);

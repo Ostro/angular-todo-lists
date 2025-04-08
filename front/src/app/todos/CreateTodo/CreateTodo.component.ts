@@ -1,16 +1,15 @@
-import { Component, signal, output, inject } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Todo } from '../../../types/prismaTypes';
+import { ButtonModule } from 'primeng/button';
 import { TodoListService } from '../../services/todoLists.service';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'CreateTodo',
-  imports: [FormsModule],
+  imports: [FormsModule, ButtonModule, InputTextModule],
   templateUrl: './CreateTodo.component.html',
-  styleUrl: './CreateTodo.component.css',
 })
 export class CreateTodoComponent {
-  addTask = output<Todo>();
   newTodo = signal<string>('');
 
   todoListService = inject(TodoListService);

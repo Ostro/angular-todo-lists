@@ -1,0 +1,37 @@
+<div
+  class="flex items-center justify-between px-16 mb-12 shadow-[0_5px_10px_rgba(0,0,0,0.25)] h-[150px]"
+>
+  <img src="logo.svg" />
+  <div *ngIf="userService.status() === 'loaded'">
+    <p-button
+      *ngIf="!userService.currentUser()?.id"
+      label="Login"
+      icon="pi pi-user"
+      iconPos="right"
+      (click)="showLogin()"
+    />
+    <div *ngIf="userService.currentUser()?.id">
+      <div>
+        <i class="pi pi-user"></i>
+        {{ userService.currentUser()?.name }} ({{
+          userService.currentUser()?.email
+        }})
+        <p-button
+          label="Logout"
+          iconPos="right"
+          (click)="userService.logout()"
+          severity="secondary"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  header="Login"
+  [modal]="true"
+  [(visible)]="showLoginDialog"
+  [style]="{ width: '50%' }"
+>
+  <LoginForm *ngIf="showLoginDialog" (onSuccess)="closeLogin()" />
+</p-dialog>

@@ -1,6 +1,4 @@
 <main class="main">
-  <div *ngIf="userService.currentUser()">
-    Hello: {{ userService.currentUser()?.name }}
-  </div>
+  <HeaderMenu />
   <router-outlet />
 </main>

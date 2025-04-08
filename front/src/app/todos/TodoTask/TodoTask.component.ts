@@ -1,16 +1,17 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { Todo } from '../../../types/prismaTypes';
 import { TodoListService } from '../../services/todoLists.service';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'TodoTask',
-  imports: [],
+  imports: [ButtonModule, CheckboxModule, FormsModule],
   templateUrl: './TodoTask.component.html',
-  styleUrl: './TodoTask.component.css',
 })
 export class TodoTaskComponent {
   todo = input.required<Todo>();
-  removeTodo = output<Todo>();
 
   todoListService = inject(TodoListService);
 

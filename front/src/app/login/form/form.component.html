@@ -1,0 +1,24 @@
+<form
+  [formGroup]="loginForm"
+  (submit)="onSubmit($event)"
+  class="flex flex-col gap-4"
+>
+  <p-floatlabel variant="on">
+    <input pInputText fluid type="email" id="email" formControlName="email" />
+    <label for="username">Email address</label>
+  </p-floatlabel>
+
+  <p-floatlabel variant="on">
+    <p-password
+      type="password"
+      id="password"
+      formControlName="password"
+      [feedback]="false"
+      [toggleMask]="true"
+      fluid
+    />
+    <label for="password">Password</label>
+  </p-floatlabel>
+
+  <p-button type="submit" label="Login" />
+</form>

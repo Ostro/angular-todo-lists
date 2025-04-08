@@ -1,14 +1,18 @@
-<div [style]="{ display: 'flex', alignItems: 'center', gap: '.5rem' }">
-  <div class="todo-task" (click)="completeTodo()">
-    <span [class]="{ complete: todo().completed }">{{
+<div class="flex gap-2 items-center">
+  <div
+    class="w-full flex gap-4 p-4 justify-between items-center hover:bg-gray-100 hover:cursor-pointer"
+    (click)="completeTodo()"
+  >
+    <span [class]="{ 'line-through': todo().completed }">{{
       todo().description
     }}</span>
-    <input type="checkbox" [checked]="todo().completed" />
+    <p-checkbox [(ngModel)]="todo().completed" [binary]="true" />
   </div>
-  <button
+  <p-button
+    class="mr-2"
+    icon="pi pi-trash"
     (click)="todoListService.deleteTodo(todo().id)"
-    [style]="{ marginRight: '.5rem' }"
-  >
-    Delete
-  </button>
+    rounded="true"
+    severity="danger"
+  />
 </div>

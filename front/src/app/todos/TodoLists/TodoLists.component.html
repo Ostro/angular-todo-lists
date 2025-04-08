@@ -1,22 +1,29 @@
-<ul>
-  <div
-    *ngFor="let list of todoListService.getTodoLists()"
-    [style]="{
-        display: 'flex',
-        gap: '1rem',
-        justifyContent: 'space-between',
-      }"
-  >
+<ul class="flex flex-col gap-2">
+  <div *ngFor="let list of todoListService.getTodoLists()" class="flex gap-4">
     <li
-      [class]="{ underline: todoListService.selectedListId() === list.id }"
+      [class]="{
+        underline: todoListService.selectedListId() === list.id,
+        'cursor-pointer': true,
+        'w-full': true,
+      }"
       (click)="chooseList(list.id)"
     >
       {{ list.title }}
     </li>
-    <span [style]="{ cursor: 'pointer' }" (click)="deleteList(list.id)">X</span>
+    <p-button
+      icon="pi pi-trash"
+      severity="danger"
+      (click)="deleteList(list.id)"
+      rounded="true"
+    />
   </div>
 </ul>
-<div class="row">
-  <input type="text" [(ngModel)]="newListTitle" />
-  <button (click)="createList()" [disabled]="!newListTitle()">+</button>
+<div class="flex gap-2 mt-8">
+  <input pInputText type="text" [(ngModel)]="newListTitle" />
+  <p-button
+    (click)="createList()"
+    [disabled]="!newListTitle()"
+    icon="pi pi-plus"
+    rounded="true"
+  />
 </div>
