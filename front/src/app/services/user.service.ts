@@ -1,10 +1,27 @@
-import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import {
+  effect,
+  inject,
+  Injectable,
+  PLATFORM_ID,
+  REQUEST,
+  signal,
+} from '@angular/core';
 import { User as PrismaUser } from '../../types/prismaTypes';
 import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 
 type User = Omit<PrismaUser, 'password'>;
+
+const parseCookie = (str: string) =>
+  str
+    .split(';')
+    .map((v) => v.split('='))
+    .reduce((acc, v) => {
+      acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+      return acc;
+    }, {} as any);
 
 @Injectable({
   providedIn: 'root',
@@ -12,39 +29,57 @@ type User = Omit<PrismaUser, 'password'>;
 export class UserService {
   private platformId = inject(PLATFORM_ID);
   private http = inject(HttpClient);
-  private router = inject(Router);
+  private cookieService = inject(CookieService);
 
   currentUser = signal<User | null>(null);
-  status = signal<'loading' | 'loaded'>('loading');
+  jwt = signal<string | null>(null);
 
   constructor() {
     if (this.platformId === 'browser') {
-      const jwt = localStorage?.getItem('userSession');
-      if (jwt) {
-        this.currentUser.set(jwtDecode(jwt));
+      const jwt = this.cookieService.get('user-session');
+      this.hydrateUser(jwt);
+    } else {
+      const req = inject(REQUEST);
+      const cookieString = req?.headers?.get('cookie');
+      if (cookieString) {
+        const cookies = parseCookie(cookieString);
+        const jwt = cookies['user-session'];
+        this.hydrateUser(jwt);
       }
-      this.status.set('loaded');
+    }
+  }
+
+  private hydrateUser(jwt?: string) {
+    if (jwt) {
+      this.currentUser.set(jwtDecode(jwt));
+      this.jwt.set(jwt);
     }
   }
 
   login(email: string, password: string, onSuccess?: () => void) {
     this.http
-      .post<{ jwt: string }>('http://localhost:3000/login', {
-        email,
-        password,
-      })
-      .subscribe((data) => {
-        localStorage?.setItem('userSession', data.jwt);
-        this.currentUser.set(jwtDecode(data.jwt) as User);
-        this.router.navigate(['/']);
-        if (onSuccess && data.jwt) {
+      .post<User>(
+        'http://localhost:3000/login',
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .subscribe(() => {
+        const jwt = this.cookieService.get('user-session');
+        this.hydrateUser(jwt);
+        if (onSuccess) {
           onSuccess();
         }
       });
   }
 
   logout() {
-    localStorage?.removeItem('userSession');
+    this.cookieService.delete('user-session');
+    this.jwt.set(null);
     this.currentUser.set(null);
   }
 }

@@ -12,7 +12,6 @@ import { FormsModule } from '@angular/forms';
 })
 export class TodoTaskComponent {
   todo = input.required<Todo>();
-
   todoListService = inject(TodoListService);
 
   completeTodo() {

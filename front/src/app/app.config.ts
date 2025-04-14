@@ -1,4 +1,8 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  inject,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
@@ -8,14 +12,34 @@ import {
   provideClientHydration,
   withEventReplay,
 } from '@angular/platform-browser';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import {
+  HttpHandlerFn,
+  HttpRequest,
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+} from '@angular/common/http';
+import { UserService } from './services/user.service';
+
+function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn) {
+  const userService = inject(UserService);
+
+  if (!userService.jwt()) {
+    return next(req);
+  }
+
+  const newReq = req.clone({
+    headers: req.headers.append('Authorization', 'Bearer ' + userService.jwt()),
+  });
+  return next(newReq);
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {

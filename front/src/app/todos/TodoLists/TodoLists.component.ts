@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TodoListService } from '../../services/todoLists.service';
 import { CommonModule } from '@angular/common';
@@ -13,10 +13,6 @@ import { ButtonModule } from 'primeng/button';
 export class TodoListsComponent {
   todoListService = inject(TodoListService);
   newListTitle = signal<string>('');
-
-  constructor() {
-    this.todoListService.fetchLists();
-  }
 
   createList() {
     this.todoListService.createList(this.newListTitle());

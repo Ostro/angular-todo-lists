@@ -1,22 +1,37 @@
 import { HttpClient } from '@angular/common/http';
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { Todo, TodoList } from '../../types/prismaTypes';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TodoListService {
   private http = inject(HttpClient);
+  private userService = inject(UserService);
+
   private todoLists: TodoList[] = [];
   private currentTodoList: Todo[] = [];
   selectedListId = signal<number | null>(null);
 
   constructor() {
-    // fetch todo lists when selected list changes
+    // fetch todo list items when selected list changes
     effect(() => {
       const newListId = this.selectedListId();
       if (newListId) {
         this.fetchTodos(newListId);
+      }
+    });
+
+    effect(() => {
+      if (this.userService.jwt()) {
+        // fetch todo lists when user logs in
+        this.fetchLists();
+      } else {
+        // clear todo lists when user logs out
+        this.selectedListId.set(null);
+        this.currentTodoList = [];
+        this.todoLists = [];
       }
     });
   }
