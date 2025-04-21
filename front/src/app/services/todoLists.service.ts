@@ -10,7 +10,8 @@ export class TodoListService {
   private http = inject(HttpClient);
   private userService = inject(UserService);
 
-  private todoLists: TodoList[] = [];
+  myLists: TodoList[] = [];
+  sharedLists: TodoList[] = [];
   private currentTodoList: Todo[] = [];
   selectedListId = signal<number | null>(null);
 
@@ -31,23 +32,21 @@ export class TodoListService {
         // clear todo lists when user logs out
         this.selectedListId.set(null);
         this.currentTodoList = [];
-        this.todoLists = [];
+        this.myLists = [];
+        this.sharedLists = [];
       }
     });
-  }
-
-  //Todo Lists
-  getTodoLists() {
-    return this.todoLists;
   }
 
   deleteList(listId: number) {
     this.http
       .delete(`http://localhost:3000/todoList/${listId}`)
       .subscribe(() => {
-        this.todoLists = this.todoLists.filter((l) => l.id !== listId);
+        this.myLists = this.myLists.filter((l) => l.id !== listId);
         if (this.selectedListId() === listId) {
-          this.selectedListId.set(this.todoLists?.[0]?.id);
+          this.selectedListId.set(
+            this?.myLists?.[0]?.id || this?.sharedLists?.[0]?.id
+          );
         }
       });
   }
@@ -56,19 +55,24 @@ export class TodoListService {
     this.http
       .post<TodoList>('http://localhost:3000/todoList', { title })
       .subscribe((data) => {
-        this.todoLists = [...this.todoLists, data];
+        this.myLists = [...this.myLists, data];
         this.selectedListId.set(data.id);
       });
   }
 
   fetchLists() {
     this.http
-      .get<TodoList[]>('http://localhost:3000/todoLists')
+      .get<{ myLists: TodoList[]; sharedLists: TodoList[] }>(
+        'http://localhost:3000/todoLists'
+      )
       .subscribe((data) => {
-        this.todoLists = data;
-        this.selectedListId.set(data?.[0]?.id);
+        this.myLists = data.myLists;
+        this.sharedLists = data.sharedLists;
+        this.selectedListId.set(
+          data?.myLists?.[0]?.id || data?.sharedLists?.[0]?.id
+        );
       });
-    return this.todoLists;
+    return this.myLists;
   }
 
   //Todos

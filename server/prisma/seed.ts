@@ -5,21 +5,44 @@ const prisma = new PrismaClient();
 
 async function seedDb() {
   console.log('Seeding database...');
-  await prisma.user.create({
+  const janeDoe = await prisma.user.create({
+    data: {
+      email: 'jane.doe@mail.com',
+      name: 'Jane Doe',
+      password: await hash('password', 10),
+    },
+  });
+
+  const foobarUSer = await prisma.user.create({
     data: {
       email: 'foo@bar.com',
       name: 'Foo Bar',
       password: await hash('password', 10),
-      todoLists: {
-        create: {
-          title: 'My First List',
-          todos: {
-            create: [
-              { description: 'Todo 1', completed: false },
-              { description: 'Todo 2', completed: true },
-            ],
-          },
+    },
+  });
+
+  await prisma.todoList.create({
+    data: {
+      sharedWith: {
+        connect: {
+          id: janeDoe.id,
         },
+      },
+      createdBy: { connect: { id: foobarUSer.id } },
+      title: 'My First List',
+      todos: {
+        create: [
+          {
+            description: 'Todo 1',
+            completed: false,
+            createdBy: { connect: { id: foobarUSer.id } },
+          },
+          {
+            description: 'Todo 2',
+            completed: true,
+            createdBy: { connect: { id: foobarUSer.id } },
+          },
+        ],
       },
     },
   });

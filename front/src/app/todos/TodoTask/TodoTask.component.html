@@ -6,7 +6,20 @@
     <span [class]="{ 'line-through': todo().completed }">{{
       todo().description
     }}</span>
-    <p-checkbox [(ngModel)]="todo().completed" [binary]="true" />
+    <div class="flex gap-2 items-center">
+      <p-checkbox [(ngModel)]="todo().completed" [binary]="true" />
+      <p-avatar
+        icon="pi pi-user"
+        shape="circle"
+        [pTooltip]="
+          'Created by ' +
+          (todo().createdBy.id === userService.currentUser()?.id
+            ? 'you'
+            : todo().createdBy.name)
+        "
+        tooltipPosition="top"
+      />
+    </div>
   </div>
   <p-button
     class="mr-2"

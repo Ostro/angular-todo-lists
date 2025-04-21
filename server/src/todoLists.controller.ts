@@ -21,16 +21,34 @@ export class TodoListController {
   @Get('todoLists')
   @UseGuards(IsAuthenticated)
   async getTodos(@Req() request: Request) {
-    const lists = await this.prisma.todoList.findMany({
+    const myLists = await this.prisma.todoList.findMany({
       where: { userId: request.user.id },
+      select: {
+        id: true,
+        title: true,
+        createdBy: true,
+      },
     });
 
-    return lists.map((list) => {
-      return {
-        id: list.id,
-        title: list.title,
-      };
+    const sharedLists = await this.prisma.todoList.findMany({
+      where: {
+        sharedWith: {
+          some: {
+            id: request.user.id,
+          },
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+        createdBy: true,
+      },
     });
+
+    return {
+      myLists,
+      sharedLists,
+    };
   }
 
   @Get('todoList/:id')
@@ -51,7 +69,7 @@ export class TodoListController {
     return this.prisma.todoList.create({
       data: {
         ...todoData,
-        User: {
+        createdBy: {
           connect: {
             id: request.user.id,
           },

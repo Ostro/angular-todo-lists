@@ -1,24 +1,5 @@
-# FROM node:20-alpine AS builder
-
-# WORKDIR /server
-
-# COPY package*.json ./
-# COPY prisma ./prisma/
-# COPY .env ./
-# COPY tsconfig.json ./
-
-# RUN yarn
-
-# COPY . .
-
-# EXPOSE 3000
-
-# RUN npx prisma generate
-
-# CMD yarn start:prod
-
 # Build image
-FROM node:20-alpine as builder
+FROM node:23-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
@@ -31,9 +12,9 @@ RUN npx prisma generate
 
 # Production image
 
-FROM node:20-alpine
+FROM node:23-alpine
 WORKDIR /app
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 COPY package*.json ./
 COPY .env ./
@@ -46,4 +27,4 @@ COPY --chown=node:node --from=builder /app/node_modules/.prisma /app/node_module
 
 EXPOSE 8080
 
-CMD yarn start:migrate:prod
+CMD ["npm", "run", "start:migrate:prod"]

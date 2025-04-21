@@ -1,5 +1,18 @@
 <div class="flex mx-12">
-  <TodoLists class="my-8" />
+  <div class="flex flex-col gap-8">
+    <TodoLists
+      class="my-8"
+      categoryName="My lists"
+      [todoList]="todoListService.myLists"
+    />
+    <TodoLists
+      class="my-8"
+      categoryName="Shared with me"
+      [isSharedList]="true"
+      [todoList]="todoListService.sharedLists"
+      *ngIf="todoListService.sharedLists.length > 0"
+    />
+  </div>
   <p-divider layout="vertical" />
   <div *ngIf="!!todoListService.selectedListId()" class="flex-grow">
     <TodoTask

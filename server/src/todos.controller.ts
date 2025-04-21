@@ -6,9 +6,13 @@ import {
   Body,
   Delete,
   Put,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { Prisma } from '../prisma/generated/client';
 import { PrismaService } from './prisma.service';
+import { IsAuthenticated } from './guards/isAuthenticated';
+import { Request } from 'express';
 
 @Controller()
 export class TodoController {
@@ -20,20 +24,16 @@ export class TodoController {
       where: {
         TodoList: { id: Number(listId) },
       },
-    });
-  }
-
-  @Get('todo/:id')
-  async getTodoById(@Param('id') id: string) {
-    return this.prisma.todo.findUnique({
-      where: {
-        id: Number(id),
+      include: {
+        createdBy: true,
       },
     });
   }
 
   @Post('todo/:listId')
+  @UseGuards(IsAuthenticated)
   async createTodo(
+    @Req() request: Request,
     @Body() todo: Prisma.TodoCreateInput,
     @Param('listId') listId: string,
   ) {
@@ -45,6 +45,14 @@ export class TodoController {
             id: Number(listId),
           },
         },
+        createdBy: {
+          connect: {
+            id: request.user.id,
+          },
+        },
+      },
+      include: {
+        createdBy: true,
       },
     });
   }

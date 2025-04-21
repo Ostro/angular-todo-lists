@@ -1,24 +1,38 @@
 <ul class="flex flex-col gap-2">
-  <div *ngFor="let list of todoListService.getTodoLists()" class="flex gap-4">
+  <li class="text-xl font-bold">{{ categoryName() }}</li>
+  <div *ngFor="let list of todoList()" class="flex gap-4 items-center">
     <li
       [class]="{
         underline: todoListService.selectedListId() === list.id,
         'cursor-pointer': true,
-        'w-full': true,
+        'flex-grow': true,
       }"
       (click)="chooseList(list.id)"
     >
       {{ list.title }}
     </li>
     <p-button
+      *ngIf="!isSharedList()"
       icon="pi pi-trash"
       severity="danger"
       (click)="deleteList(list.id)"
       rounded="true"
     />
+    <p-avatar
+      *ngIf="isSharedList()"
+      icon="pi pi-user"
+      shape="circle"
+      [pTooltip]="
+        'Created by ' +
+        (list.createdBy.id === userService.currentUser()?.id
+          ? 'you'
+          : list.createdBy.name)
+      "
+      tooltipPosition="top"
+    />
   </div>
 </ul>
-<div class="flex gap-2 mt-8">
+<div *ngIf="!isSharedList()" class="flex gap-2 mt-8">
   <input pInputText type="text" [(ngModel)]="newListTitle" />
   <p-button
     (click)="createList()"

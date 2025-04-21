@@ -18,20 +18,30 @@ model Todo {
   completed   Boolean  @default(false)
   TodoList    TodoList @relation(fields: [todoListId], references: [id], onDelete: Cascade)
   todoListId  Int
+  userId      Int
+  createdBy   User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
 }
 
 model TodoList {
-  id     Int    @id @default(autoincrement())
-  title  String
-  todos  Todo[]
-  User   User   @relation(fields: [userId], references: [id])
-  userId Int
+  id         Int      @id @default(autoincrement())
+  title      String
+  todos      Todo[]
+  userId     Int
+  createdBy  User     @relation(name: "MyTodoLists", fields: [userId], references: [id])
+  sharedWith User[]   @relation(name: "SharedTodoLists")
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime @updatedAt @db.Timestamptz(6)
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  name      String
-  password  String
-  todoLists TodoList[]
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  name         String
+  password     String
+  todoLists    TodoList[] @relation("MyTodoLists")
+  sharedWithMe TodoList[] @relation("SharedTodoLists")
+  todoListId   Int?
+  Todo         Todo[]
 }
